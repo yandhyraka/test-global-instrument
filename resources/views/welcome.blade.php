@@ -407,6 +407,12 @@
 
     <script>
         function submit() {
+            $('#listZahir').html('')
+            $('#listMutasiBank').html('')
+            $('#totalZahir').html('')
+            $('#totalMutasiBank').html('')
+            $('#totalSelisih').html('')
+
             let dataAjax = {
                 dateFrom: $('#dateFrom').val(),
                 dateTo: $('#dateTo').val()
@@ -420,21 +426,37 @@
                 success: function(response) {
                     let listZahir = '<table>';
                     for (let i = 0; i < response.data.resultZahir.length; i++) {
-                        listZahir += '<tr><td>' + response.data.resultZahir[i].jumlah + '</td></tr>';
+                        listZahir += '<tr><td>' + new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(response.data.resultZahir[i].jumlah) + '</td></tr>';
                     }
                     listZahir += '</table>';
 
                     let listMutasiBank = '<table>';
                     for (let i = 0; i < response.data.resultMutasiBank.length; i++) {
-                        listMutasiBank += '<tr><td>' + response.data.resultMutasiBank[i].jumlah + '</td></tr>';
+                        listMutasiBank += '<tr><td>' + new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(response.data.resultMutasiBank[i].jumlah) + '</td></tr>';
                     }
                     listMutasiBank += '</table>';
 
                     $('#listZahir').html(listZahir)
                     $('#listMutasiBank').html(listMutasiBank)
-                    $('#totalZahir').html(response.data.totalZahir)
-                    $('#totalMutasiBank').html(response.data.totalMutasiBank)
-                    $('#totalSelisih').html(response.data.totalSelisih)
+                    $('#totalZahir').html(new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(response.data.totalZahir))
+                    $('#totalMutasiBank').html(new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(response.data.totalMutasiBank))
+                    $('#totalSelisih').html(new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(response.data.totalSelisih))
+
                     console.log(response)
                 },
                 fail: function(response) {
@@ -507,7 +529,7 @@
                         </div>
 
                         <br>
-                        
+
                         <div class="ml-12">
                             <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
                                 SELISIH: <span id="totalSelisih"></span>
