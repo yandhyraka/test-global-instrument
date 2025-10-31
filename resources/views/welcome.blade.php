@@ -7,6 +7,8 @@
 
     <title>Laravel</title>
 
+    <script src="{{ asset('js/jquery.js') }}"></script>
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -405,7 +407,40 @@
 
     <script>
         function submit() {
-            console.log('aa')
+            let dataAjax = {
+                dateFrom: $('#dateFrom').val(),
+                dateTo: $('#dateTo').val()
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:8000/api/calculate-selisih',
+                data: dataAjax,
+                dataType: 'json',
+                success: function(response) {
+                    let listZahir = '<table>';
+                    for (let i = 0; i < response.data.resultZahir.length; i++) {
+                        listZahir += '<tr><td>' + response.data.resultZahir[i].jumlah + '</td></tr>';
+                    }
+                    listZahir += '</table>';
+
+                    let listMutasiBank = '<table>';
+                    for (let i = 0; i < response.data.resultMutasiBank.length; i++) {
+                        listMutasiBank += '<tr><td>' + response.data.resultMutasiBank[i].jumlah + '</td></tr>';
+                    }
+                    listMutasiBank += '</table>';
+
+                    $('#listZahir').html(listZahir)
+                    $('#listMutasiBank').html(listMutasiBank)
+                    $('#totalZahir').html(response.data.totalZahir)
+                    $('#totalMutasiBank').html(response.data.totalMutasiBank)
+                    $('#totalSelisih').html(response.data.totalSelisih)
+                    console.log(response)
+                },
+                fail: function(response) {
+                    console.log(response)
+                },
+            });
         }
     </script>
 </head>
@@ -433,12 +468,12 @@
 
                         <div class="ml-12">
                             <label for="" class="text-gray-900 dark:text-white">Date from </label>
-                            <input type="date" name="dateFrom">
+                            <input type="date" id="dateFrom" name="dateFrom">
                         </div>
 
                         <div class="ml-12">
                             <label for="" class="text-gray-900 dark:text-white">Date to </label>
-                            <input type="date" name="dateTo">
+                            <input type="date" id="dateTo" name="dateTo">
                         </div>
 
                         <div class="ml-12">
@@ -455,7 +490,27 @@
 
                         <div class="ml-12">
                             <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                                Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
+                                DARI ZAHIR:
+                                <div id="listZahir"></div>
+                                TOTAL: <span id="totalZahir"></span>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div class="ml-12">
+                            <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                                DARI MUTASI BANK:
+                                <div id="listMutasiBank"></div>
+                                TOTAL: <span id="totalMutasiBank"></span>
+                            </div>
+                        </div>
+
+                        <br>
+                        
+                        <div class="ml-12">
+                            <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                                SELISIH: <span id="totalSelisih"></span>
                             </div>
                         </div>
                     </div>
