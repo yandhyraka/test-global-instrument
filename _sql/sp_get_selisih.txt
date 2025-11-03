@@ -1,0 +1,17 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_selisih`(
+  date_from date,
+  date_to date
+)
+BEGIN
+  SELECT
+    IFNULL(zahir_debet, (zahir_kredit * -1)) AS jumlah,
+    SUM(IFNULL(zahir_debet, (zahir_kredit * -1))) OVER (ORDER BY zahir_id) AS total
+  FROM zahirs 
+  WHERE zahir_tanggal BETWEEN date_from AND date_to;
+  
+  SELECT
+    IFNULL((mutasi_bank_debet * -1), mutasi_bank_kredit) AS jumlah,
+    SUM(IFNULL((mutasi_bank_debet * -1), mutasi_bank_kredit)) OVER (ORDER BY mutasi_bank_id) AS total
+  FROM mutasi_banks 
+  WHERE mutasi_bank_tanggal BETWEEN date_from AND date_to;
+END
